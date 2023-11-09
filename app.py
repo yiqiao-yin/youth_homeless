@@ -1,22 +1,23 @@
 import streamlit as st
 
 import openai
-from openai import OpenAI
+# from openai import OpenAI
 
-client = OpenAI(api_key = st.secrets["OPENAI_API_KEY"])
+# client = OpenAI(api_key = st.secrets["OPENAI_API_KEY"])
 
 from langchain.agents import load_tools
 from langchain.agents import initialize_agent
 from langchain.agents import AgentType
 from langchain.llms import OpenAI
 
+import numpy as np
 import pandas as pd
 
 from scipy.spatial.distance import cosine
 
 from typing import Dict, List, Union
 
-openai.api_key = st.secrets["OPENAI_API_KEY"]
+openai.api_key = openai_api_key = st.secrets["OPENAI_API_KEY"]
 
 def merge_dataframes(dataframes):
     # Concatenate the list of dataframes
@@ -40,7 +41,7 @@ def call_chatgpt(prompt: str) -> str:
     """
 
     # Use the OpenAI API to generate a response based on the input prompt.
-    response = client.Completion.create(
+    response = openai.Completion.create(
         model="text-davinci-003",
         prompt=prompt,
         temperature=0.5,
@@ -56,22 +57,22 @@ def call_chatgpt(prompt: str) -> str:
     # Return the generated AI response.
     return ans
 
-SERPAPI_API_KEY = st.secrets["SERPAPI_API_KEY"]
+# SERPAPI_API_KEY = "80f71ff0ee104b0feeacd402d24833b67ce079548bd0ec63c54144ccda39a41d" # st.secrets["SERPAPI_API_KEY"]
 
-def call_langchain(prompt: str) -> str:
-    llm = OpenAI(temperature=0)
-    tools = load_tools(["serpapi", "llm-math"], llm=llm)
-    agent = initialize_agent(
-        tools,
-        llm,
-        agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
-        verbose=True)
-    output = agent.run(prompt)
+# def call_langchain(prompt: str) -> str:
+#     llm = OpenAI(temperature=0, openai_api_key=openai_api_key)
+#     tools = load_tools(["serpapi", "llm-math"], llm=llm)
+#     agent = initialize_agent(
+#         tools,
+#         llm,
+#         agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
+#         verbose=True)
+#     output = agent.run(prompt)
 
-    return output
+#     return output
 
 def openai_text_embedding(prompt: str) -> str:
-    return client.Embedding.create(input=prompt, model="text-embedding-ada-002")[
+    return openai.Embedding.create(input=prompt, model="text-embedding-ada-002")[
         "data"
     ][0]["embedding"]
 
@@ -153,10 +154,10 @@ df_screened_by_dist_score = add_dist_score_column(
 )
 qa_pairs = convert_to_list_of_dict(df_screened_by_dist_score)
 
-ref_from_internet = call_langchain(question)
+# ref_from_internet = call_langchain(question)
+# Based on the context: {ref_from_internet}, 
 
 engineered_prompt = f"""
-    Based on the context: {ref_from_internet}, 
     and also based on the context: {qa_pairs},
     answer the user question: {question}
 """
