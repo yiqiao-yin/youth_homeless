@@ -57,8 +57,6 @@ def call_chatgpt(prompt: str) -> str:
     # Return the generated AI response.
     return ans
 
-# SERPAPI_API_KEY = "80f71ff0ee104b0feeacd402d24833b67ce079548bd0ec63c54144ccda39a41d" # st.secrets["SERPAPI_API_KEY"]
-
 # def call_langchain(prompt: str) -> str:
 #     llm = OpenAI(temperature=0, openai_api_key=openai_api_key)
 #     tools = load_tools(["serpapi", "llm-math"], llm=llm)
